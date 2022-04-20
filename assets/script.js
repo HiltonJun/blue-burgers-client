@@ -14,9 +14,7 @@ async function findAllBurgers() {
             <div class="BurgerListaIt__nome">${burger.nome}</div>
             <div class="BurgerListaItem__descricao">${burger.descricao}</div>
             <div class="BurgerListaItem__botton">
-              <div class="BurgerListaItem__preco">R$ ${burger.preco.toFixed(
-                2
-              )}</div>
+              <div class="BurgerListaItem__preco">R$ ${burger.preco}</div>
               <div class="BurgerListaItem__acoes Acoes">
                 <button class="Acoes__editar btn" onclick="abrirModal(${
                   burger.id
@@ -53,7 +51,7 @@ async function findByIdBurgers() {
       <div class="BurgerCardItem__nome">${burger.nome}</div>
       <div class="BurgerCardItem__descricao">${burger.descricao}</div>
       <div class="BurgerListaItem__botton">
-      <div class="BurgerListaItem__preco">R$ ${burger.preco.toFixed(2)}</div>
+      <div class="BurgerListaItem__preco">R$ ${burger.preco}</div>
       <div class="BurgerListaItem__acoes Acoes">
         <button class="Acoes__editar btn" onclick="abrirModal(${
           burger.id
@@ -133,18 +131,18 @@ async function createBurger() {
   const novoBurger = await response.json();
 
   const html = `
-  <div class="BurgerListaItem" id="BurgerListaItem_${burger.id}">
+  <div class="BurgerListaItem" id="BurgerListaItem_${novoBurger.id}">
     <div>
         <div class="BurgerListaItem__nome">${novoBurger.nome}</div>
         <div class="BurgerListaItem__descricao">${novoBurger.descricao}</div>
         <div class="BurgerListaItem__botton">
-        <div class="BurgerListaItem__preco">R$ ${burger.preco.toFixed(2)}</div>
+        <div class="BurgerListaItem__preco">R$ ${novoBurger.preco}</div>
         <div class="BurgerListaItem__acoes Acoes">
           <button class="Acoes__editar btn" onclick="abrirModal(${
-            burger.id
+            novoBurger.id
           })"><img src="assets/icons/pencil.png" / width="20px"></button> 
           <button class="Acoes__apagar btn" onclick="abrirModalDelete(${
-            burger.id
+            novoBurger.id
           })"><img src="assets/icons/trash.png" / width="20px"></button> 
         </div>
     </div>
@@ -160,15 +158,19 @@ async function createBurger() {
   }
 
   fecharModal();
+  location.reload();
 }
 
 function abrirModalDelete(id) {
+  console.log(id);
   document.querySelector("#overlay-delete").style.display = "flex";
 
   const btnSim = document.querySelector(".btn_delete_yes");
 
   btnSim.addEventListener("click", function () {
     deleteBurger(id);
+    alert("Burger deletado com sucesso!")
+    location.reload();
   });
 }
 
