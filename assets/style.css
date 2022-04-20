@@ -11,28 +11,23 @@ html {
   width: 100%;
   min-height: 100vh;
   overflow: auto;
-  background-color: #ffffff;
+  background-color: #000000;
 }
 
 .Home {
   position: relative;
-  background-image: radial-gradient(
-    farthest-corner at 40px 40px,
-    #000000 60%,
-    #00000080 100%
-  );
   min-height: calc(100vh - 60px);
   margin: 15px;
   padding: 15px;
   border-radius: 20px;
   color: #000000;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.3);
 }
 
 .Home h2 {
   display: flex;
   justify-content: center;
-  color: #b90000;
+  color: #ffffff;
 }
 
 .Home__container {
@@ -140,7 +135,7 @@ html {
 
 .default-button {
   background-color: transparent;
-  border: 2px solid #3d1c00;
+  border: 2px solid #ff7700;
   padding: 0.4rem;
   color: #ffffff;
   font-weight: 600;
@@ -153,7 +148,7 @@ html {
 }
 
 .default-button:hover {
-  background-color: #3d1e01;
+  background-color: #0a95c0;
   color: #ffffff;
 }
 
