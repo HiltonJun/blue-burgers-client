@@ -1,7 +1,8 @@
-const baseURL = "http://localhost:3000/burger";
+const baseURL = "http://localhost:3000/burgers";
+const msgAlert = document.querySelector(".msg-alert");
 
 async function findAllBurgers() {
-  const response = await fetch(`${baseURL}/todos-burgers`);
+  const response = await fetch(`${baseURL}/all-burgers`);
 
   const burgers = await response.json();
 
@@ -9,26 +10,19 @@ async function findAllBurgers() {
     document.querySelector("#burgerList").insertAdjacentHTML(
       "beforeend",
       `
-    <div class="BurgerListaItem" id="BurgerListaItem_${burger.id}">
+    <div class="burger-list-item" id="burger-list-item-${burger._id}">
         <div>
-            <div class="BurgerListaIt__nome">${burger.nome}</div>
-            <div class="BurgerListaItem__descricao">${burger.descricao}</div>
-            <div class="BurgerListaItem__botton">
-              <div class="BurgerListaItem__preco">R$ ${burger.preco}</div>
-              <div class="BurgerListaItem__acoes Acoes">
-                <button class="Acoes__editar btn" onclick="abrirModal(${
-                  burger.id
-                })"><img src="assets/icons/pencil.png" / width="20px"></button> 
-                <button class="Acoes__apagar btn" onclick="abrirModalDelete(${
-                  burger.id
-                })"><img src="assets/icons/trash.png" / width="20px"></button> 
-              </div>
+            <div class="burger-list-item-nome">${burger.nome}</div>
+            <div class="burger-list-item-preco">R$ ${burger.preco}</div>
+            <div class="burger-list-item-descricao">${burger.descricao}</div>
+
+            <div class="actions">
+              <button class="actions-edit btn" onclick="showModal('${burger._id}')">Editar</button> 
+              <button class="actions-delete btn" onclick="showModalDelete('${burger._id}')">Apagar</button> 
             </div>
         </div>
         
-        <img class="BurgerListaItem__foto" src="${burger.foto}" alt="${
-        burger.nome
-      }" />
+        <img class="burger-list-item-foto" src="${burger.foto}" alt="${burger.nome}" />
 
         
     </div>
@@ -37,70 +31,82 @@ async function findAllBurgers() {
   });
 }
 
-async function findByIdBurgers() {
-  const id = document.querySelector("#idBurger").value;
+findAllBurgers();
 
-  const response = await fetch(`${baseURL}/burger/${id}`);
+async function findByIdBurgers() {
+  const id = document.querySelector("#search-input ").value;
+
+  if (id == "") {
+    localStorage.setItem("message", "Digite um ID para pesquisar!");
+    localStorage.setItem("type", "danger");
+
+    closeMessageAlert();
+    return;
+  }
+
+  const response = await fetch(`${baseURL}/one-burger/${id}`);
   const burger = await response.json();
 
-  const burgerEscolhidoDiv = document.querySelector("#burgerEscolhido");
+  if (burger.message != undefined) {
+    localStorage.setItem("message", burger.message);
+    localStorage.setItem("type", "danger");
+    showMessageAlert();
+    return;
+  }
 
-  burgerEscolhidoDiv.innerHTML = `
-  <div class="BurgerCardItem" id="BurgerListaItem_${burger.id}">
+  document.querySelector(".list-all").style.display = "block"
+  document.querySelector(".burger-list").style.display = "none";
+  const chosenBurgerDiv = document.querySelector("#chosen-burger");
+
+  chosenBurgerDiv.innerHTML = `
+  <div class="burger-card-item" id="burger-card-item-${burger._id}">
   <div>
-      <div class="BurgerCardItem__nome">${burger.nome}</div>
-      <div class="BurgerCardItem__descricao">${burger.descricao}</div>
-      <div class="BurgerListaItem__botton">
-      <div class="BurgerListaItem__preco">R$ ${burger.preco}</div>
-      <div class="BurgerListaItem__acoes Acoes">
-        <button class="Acoes__editar btn" onclick="abrirModal(${
-          burger.id
-        })"><img src="assets/icons/pencil.png" / width="20px"></button> 
-        <button class="Acoes__apagar btn" onclick="abrirModalDelete(${
-          burger.id
-        })"><img src="assets/icons/trash.png" / width="20px"></button> 
+      <div class="burger-card-item-nome">${burger.nome}</div>
+      <div class="burger-card-item-preco">R$ ${burger.preco}</div>
+      <div class="burger-card-item-descricao">${burger.descricao}</div>
+      
+      <div class="actions">
+          <button class="actions-edit btn" onclick="showModal('${burger._id}')">Editar</button> 
+          <button class="actions-delete btn" onclick="showModalDelete('${burger._id}')">Apagar</button> 
       </div>
-    </div>
   </div>
-  <img class="BurgerCardItem__foto" src="${burger.foto}" alt="${burger.nome}" />
+  <img class="burger-card-item-foto" src="${burger.foto}" alt="${burger.nome}" />
 </div>`;
 }
 
-findAllBurgers();
-
-async function abrirModal(id = null) {
-  if (id != null) {
+async function showModal(id = "") {
+  if (id != "") {
     document.querySelector("#title-header-modal").innerText =
-      "Atualizar uma Burger";
+      "Atualizar um Burger";
     document.querySelector("#button-form-modal").innerText = "Atualizar";
 
-    const response = await fetch(`${baseURL}/burger/${id}`);
+    const response = await fetch(`${baseURL}/one-burger/${id}`);
     const burger = await response.json();
 
     document.querySelector("#nome").value = burger.nome;
     document.querySelector("#preco").value = burger.preco;
     document.querySelector("#descricao").value = burger.descricao;
     document.querySelector("#foto").value = burger.foto;
-    document.querySelector("#id").value = burger.id;
+    document.querySelector("#id").value = burger._id;
   } else {
     document.querySelector("#title-header-modal").innerText =
-      "Cadastrar uma Burger";
+      "Cadastrar um Burger";
     document.querySelector("#button-form-modal").innerText = "Cadastrar";
   }
 
   document.querySelector("#overlay").style.display = "flex";
 }
 
-function fecharModal() {
+function closeModal() {
   document.querySelector(".modal-overlay").style.display = "none";
-
   document.querySelector("#nome").value = "";
   document.querySelector("#preco").value = 0;
   document.querySelector("#descricao").value = "";
   document.querySelector("#foto").value = "";
+  document.location.reload(true);
 }
 
-async function createBurger() {
+async function submitBurger() {
   const id = document.querySelector("#id").value;
   const nome = document.querySelector("#nome").value;
   const preco = document.querySelector("#preco").value;
@@ -115,9 +121,10 @@ async function createBurger() {
     foto,
   };
 
-  const modoEdicaoAtivado = id > 0;
+  const modoEdicaoAtivado = id != "";
 
-  const endpoint = baseURL + (modoEdicaoAtivado ? `/update/${id}` : `/create`);
+  const endpoint =
+    baseURL + (modoEdicaoAtivado ? `/update-burger/${id}` : `/create-burger`);
 
   const response = await fetch(endpoint, {
     method: modoEdicaoAtivado ? "put" : "post",
@@ -130,56 +137,39 @@ async function createBurger() {
 
   const novoBurger = await response.json();
 
-  const html = `
-  <div class="BurgerListaItem" id="BurgerListaItem_${novoBurger.id}">
-    <div>
-        <div class="BurgerListaItem__nome">${novoBurger.nome}</div>
-        <div class="BurgerListaItem__descricao">${novoBurger.descricao}</div>
-        <div class="BurgerListaItem__botton">
-        <div class="BurgerListaItem__preco">R$ ${novoBurger.preco}</div>
-        <div class="BurgerListaItem__acoes Acoes">
-          <button class="Acoes__editar btn" onclick="abrirModal(${
-            novoBurger.id
-          })"><img src="assets/icons/pencil.png" / width="20px"></button> 
-          <button class="Acoes__apagar btn" onclick="abrirModalDelete(${
-            novoBurger.id
-          })"><img src="assets/icons/trash.png" / width="20px"></button> 
-        </div>
-    </div>
-    <img class="BurgerListaItem__foto" src="${
-      novoBurger.foto
-    }" alt="Burger de ${novoBurger.nome}" />
-  </div>`;
-
-  if (modoEdicaoAtivado) {
-    document.querySelector(`#BurgerListaItem_${id}`).outerHTML = html;
-  } else {
-    document.querySelector("#burgerList").insertAdjacentHTML("beforeend", html);
+  if (novoBurger.message != undefined) {
+    localStorage.setItem("message", novoBurger.message);
+    localStorage.setItem("type", "danger");
+    showMessageAlert();
+    return;
   }
 
-  fecharModal();
-  location.reload();
+  if (modoEdicaoAtivado) {
+    localStorage.setItem("message", "Burger atualizado com sucesso");
+    localStorage.setItem("type", "success");
+  } else {
+    localStorage.setItem("message", "Burger criado com sucesso");
+    localStorage.setItem("type", "success");
+  }
+  closeModal();
 }
 
-function abrirModalDelete(id) {
-  console.log(id);
+function showModalDelete(id) {
   document.querySelector("#overlay-delete").style.display = "flex";
 
-  const btnSim = document.querySelector(".btn_delete_yes");
+  const btnSim = document.querySelector(".btn-delete-yes");
 
   btnSim.addEventListener("click", function () {
     deleteBurger(id);
-    alert("Burger deletado com sucesso!")
-    location.reload();
   });
 }
 
-function fecharModalDelete() {
+function closeModalDelete() {
   document.querySelector("#overlay-delete").style.display = "none";
 }
 
 async function deleteBurger(id) {
-  const response = await fetch(`${baseURL}/delete/${id}`, {
+  const response = await fetch(`${baseURL}/delete-burger/${id}`, {
     method: "delete",
     headers: {
       "Content-Type": "application/json",
@@ -188,10 +178,27 @@ async function deleteBurger(id) {
   });
 
   const result = await response.json();
-  alert(result.message);
 
-  document.getElementById("burgerList").innerHTML = "";
+  localStorage.setItem("message", result.message);
+  localStorage.setItem("type", "success");
 
-  fecharModalDelete();
-  findAllBurgers();
+  document.location.reload(true);
+
+  closeModalDelete();
 }
+
+function closeMessageAlert() {
+  setTimeout(function () {
+    msgAlert.innerText = "";
+    msgAlert.classList.remove(localStorage.getItem("type"));
+    localStorage.clear();
+  }, 3000);
+}
+
+function showMessageAlert() {
+  msgAlert.innerText = localStorage.getItem("message");
+  msgAlert.classList.add(localStorage.getItem("type"));
+  closeMessageAlert();
+}
+
+showMessageAlert();

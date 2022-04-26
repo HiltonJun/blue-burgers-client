@@ -6,88 +6,77 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="shortcut icon" type="image/svg" href="./assets/images/logo.png">
     <title>Blue Burgers</title>
 </head>
 
 <body>
-    <section class="Home">
+    <section class="home">
 
-        <header class="Home__header Header">
+        <header class="header">
             <div class="row">
-                <div class="Header__logo Logo">
-                    <img src="assets/logo.png" width="70px" alt="Logo Blue Burgers" class="Logo__icone" />
+                <div class="logo">
+                    <img src="./assets/images/logo.png" width="70px" alt="Logo blue burgers" class="logo-icon" />
+                    <span class="logo-title"> Blue burgers </span>
                 </div>
-
-                <div class="Header__opcoes Opcoes">
-                    <div class="Opcoes__sacola Sacola">
-                        <img src="assets/icons/sacola.png" width="40px" class="Sacola__icone"
-                            alt="Sacola de compras" />
-                    </div>
+                <div class="search-space">
+                    <input type="text" id="search-input" placeholder="Digite o ID do burger" />
+                    <button class="search-button" onclick="findByIdBurgers()"><i class="bi bi-search"></i></button>
                 </div>
             </div>
         </header>
 
-        <section class="button-modal-create">
-            <button type="button" class="default-button" onclick="abrirModal()">Cadastrar Burger</button>
-        </section>
-
-        <section class="modal-overlay" id="overlay">
-
-            <div class="modal">
-
-                <div class="modal-header">
-                    <h2 id="title-header-modal">Cadastrar um burger</h2>
-                    <a onclick="fecharModal()" class="close-modal">x</a>
+            <section class="options">
+                <span class="msg-alert"></span>
+                <div class="btns-list-cad">
+                    <a href="/" class="default-button list-all">Listar todos s burgers</a>
+                    <button type="button" class="default-button" onclick="showModal()">Cadastrar Burger</button>
                 </div>
+            </section>
 
-                <div class="modal-body">
-                    <div>
-                        <input type="hidden" id="id">
-                        <input type="text" name="nome" id="nome" placeholder="Nome do Burger">
-                        <input type="number" name="preco" id="preco" placeholder="Preço do Burger">
-                        <textarea type="text" name="descricao" id="descricao" placeholder="Descrição do Burger"
-                            rows="5"></textarea>
-                        <input type="text" name="foto" id="foto" placeholder="Link da Foto do Burger">
-                        <button id="button-form-modal" onclick="createBurger()">Cadastrar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section class="modal-overlay" id="overlay-delete">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2 id="title-header-modal">Confirmação de deleção</h2>
-                    <a onclick="fecharModalDelete()" class="close-modal">x</a>
-                </div>
-                <div class="modal-body-delete">
-                    <p>Deseja realmente apagar esse burger?</p>
-                    <div class="btns_delete">
-                        <button class="btn_delete_no btn_delete" onclick="fecharModalDelete()">Não</button>
-                        <button class="btn_delete_yes btn_delete">Sim</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <h2>Pesquisar Burger</h2>
-        <div class="burger-escolhido-espaco">
-            <div id="burger-escolhido-input-espaco">
-                <input type="number" id="idBurger" placeholder="Digite o ID do burger e clique em 'Escolher'" />
-                <button class="default-button" onclick="findByIdBurgers()">ESCOLHER</button>
-            </div>
-            <div id="burgerEscolhido">
-
-            </div>
+        <div class="home-container">
+            <div class="burger-list" id="burgerList"></div>
+            <div id="chosen-burger"></div>
         </div>
 
-        <h2>Burgers Disponíveis:</h2>
-        <div class="Home__container">
-            <div class="BurgerLista" id="burgerList">
+    </section>
+    <section class="modal-overlay" id="overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="title-header-modal">Cadastrar um burger</h2>
+                <a onclick="closeModal()" class="close-modal">x</a>
+            </div>
+
+            <div class="modal-body">
+                <div>
+                    <input type="hidden" id="id">
+                    <input type="text" name="nome" id="nome" placeholder="Nome do Burger">
+                    <input type="number" name="preco" id="preco" placeholder="Preço da Burger">
+                    <textarea type="text" name="descricao" id="descricao" placeholder="Descrição da Burger"
+                        rows="5"></textarea>
+                    <input type="text" name="foto" id="foto" placeholder="Link da Foto da Burger">
+                    <button id="button-form-modal" onclick="submitBurger()">Cadastrar</button>
+                </div>
             </div>
         </div>
     </section>
-
+    <section class="modal-overlay" id="overlay-delete">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="title-header-modal">Confirmação de deleção</h2>
+                <a onclick="closeModalDelete()" class="close-modal">x</a>
+            </div>
+            <div class="modal-body-delete">
+                <p>Deseja realmente apagar esse Burger?</p>
+                <div class="btns-delete">
+                    <button class="btn-delete-no btn-delete" onclick="closeModalDelete()">Não</button>
+                    <button class="btn-delete-yes btn-delete">Sim</button>
+                </div>
+            </div>
+        </div>
+    </section>
     <script src="./assets/script.js"></script>
 </body>
 
